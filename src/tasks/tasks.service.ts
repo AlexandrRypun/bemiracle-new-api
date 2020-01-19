@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { GetTaskDto } from './dto/get-task.dto';
+import { User } from '../auth/user.entity';
 
 @Injectable()
 export class TasksService {
@@ -13,24 +14,24 @@ export class TasksService {
         private taskRepository: TaskRepository
     ) {
     }
-    getAllTasks(filters: GetTaskDto): Promise<Task[]> {
-        return this.taskRepository.findAllTasks(filters);
+    getAllTasks(filters: GetTaskDto, user: User): Promise<Task[]> {
+        return this.taskRepository.findAllTasks(filters, user);
     }
 
-    async getTaskById(id: number): Promise<Task> {
-        const task = await this.taskRepository.findOne(id);
+    async getTaskById(id: number, user: User): Promise<Task> {
+        const task = await this.taskRepository.findOne({ id, userId: user.id });
         if (!task) {
             throw new NotFoundException();
         }
         return task;
     }
 
-    createTask(params: CreateTaskDto): Promise<Task> {
-        return this.taskRepository.createTask(params);
+    createTask(params: CreateTaskDto, user: User): Promise<Task> {
+        return this.taskRepository.createTask(params, user);
     }
 
-    async updateTask(id: number, params: UpdateTaskDto): Promise<Task> {
-        const task = await this.getTaskById(id);
+    async updateTask(id: number, params: UpdateTaskDto, user: User): Promise<Task> {
+        const task = await this.getTaskById(id, user);
         Object.keys(task).forEach(key => {
             if (params[key] !== undefined) {
                 task[key] = params[key];
@@ -40,8 +41,8 @@ export class TasksService {
         return task;
     }
 
-    async deleteTask(id: number): Promise<void> {
-        const task = await this.getTaskById(id);
+    async deleteTask(id: number, user: User): Promise<void> {
+        const task = await this.getTaskById(id, user);
         await this.taskRepository.remove(task);
     }
 }
