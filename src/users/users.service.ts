@@ -1,8 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { hash, compare } from 'bcrypt';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -17,5 +17,13 @@ export class UsersService {
         }
 
         throw new UnauthorizedException('Invalid credentials');
+    }
+    async getUserById(id: number): Promise<User> {
+        const user = this.userRepository.findOne({ id });
+        if (user) {
+            return user;
+        }
+
+        throw new NotFoundException();
     }
 }

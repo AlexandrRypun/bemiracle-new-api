@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { hash } from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
 
     async signInUser(email: string, password: string): Promise<{ accessToken: string }> {
         const user = await this.userService.signIn(email, password);
+        delete user.password;
         const accessToken = await this.jwtService.sign({ ...user });
         return { accessToken };
     }
