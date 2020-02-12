@@ -3,8 +3,8 @@ import { Product } from './product.entity';
 import { ProductTranslation } from './productTranslation.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FindProductsDto } from './dto/find-products.dto';
-import { filter } from 'rxjs/operators';
-import { strict } from 'assert';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -18,6 +18,21 @@ export class ProductRepository extends Repository<Product> {
             product.translations.push(productTranslation);
         });
         return product.save();
+    }
+    async updateProduct(id: number, data: UpdateProductDto): Promise<Product> {
+        const product = await this.findOne(id);
+        if (!product) {
+            throw new NotFoundException();
+        }
+        if (data.translations) {
+            await Promise.all(data.translations.map(async translation => {
+                return ProductTranslation.update({ productId: id, lang: translation.lang }, translation);
+            }));
+            delete data.translations;
+        }
+        Product.merge(product, data);
+        await product.save();
+        return this.findOne(id, { relations: ['translations'] });
     }
 
     async findProducts(filters: FindProductsDto): Promise<Product[]> {

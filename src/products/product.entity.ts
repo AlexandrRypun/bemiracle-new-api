@@ -27,7 +27,6 @@ export class Product extends BaseEntity {
         type => ProductTranslation,
         productTranslation => productTranslation.product,
         {
-            eager: true,
             cascade: true
         }
     )

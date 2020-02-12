@@ -7,7 +7,11 @@ export class ProductTranslation extends BaseEntity {
     @PrimaryColumn({ type: 'int' })
     productId: number;
 
-    @ManyToOne(type => Product, product => product.translations )
+    @ManyToOne(
+        type => Product,
+        product => product.translations,
+        { onDelete: 'CASCADE' }
+    )
     product: Product;
 
     @PrimaryColumn({
