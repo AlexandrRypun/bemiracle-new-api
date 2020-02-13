@@ -1,10 +1,10 @@
-import { ProductLangEnum } from '../product-lang.enum';
+import { LangEnum } from '../../types/lang.enum';
 import { IsEnum, IsOptional, Length } from 'class-validator';
 
 export class FindProductsTranslationDto {
     @IsOptional()
-    @IsEnum(ProductLangEnum)
-    lang?: ProductLangEnum;
+    @IsEnum(LangEnum)
+    lang?: LangEnum;
 
     @IsOptional()
     @Length(1, 20, {

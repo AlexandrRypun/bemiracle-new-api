@@ -1,7 +1,7 @@
-import { BaseEntity, Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { ProductTranslation } from './productTranslation.entity';
+import { Category } from '../categories/category.entity';
 
-@Unique(['id'])
 @Entity({ name: 'products' })
 export class Product extends BaseEntity {
     @PrimaryGeneratedColumn()
@@ -19,9 +19,17 @@ export class Product extends BaseEntity {
     oldPrice?: number;
 
     @Column({
-        type: 'int'
+        type: 'int',
+        nullable: true
     })
-    categoryId: number;
+    categoryId?: number;
+
+    @ManyToOne(
+        type => Category,
+        category => category.products,
+        { onDelete: 'SET NULL' }
+        )
+    category: Category;
 
     @OneToMany(
         type => ProductTranslation,

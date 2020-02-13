@@ -1,9 +1,9 @@
-import { ProductLangEnum } from '../product-lang.enum';
+import { LangEnum } from '../../types/lang.enum';
 import { IsEnum, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateProductTranslationDto {
-    @IsEnum(ProductLangEnum)
-    lang: ProductLangEnum;
+    @IsEnum(LangEnum)
+    lang: LangEnum;
 
     @Length(1, 255)
     name: string;

@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { ProductLangEnum } from './product-lang.enum';
+import { LangEnum } from '../types/lang.enum';
 import { Product } from './product.entity';
 
 @Entity({ name: 'productTranslations' })
@@ -16,10 +16,10 @@ export class ProductTranslation extends BaseEntity {
 
     @PrimaryColumn({
         type: 'enum',
-        enum: ProductLangEnum,
-        default: ProductLangEnum.UA
+        enum: LangEnum,
+        default: LangEnum.UA
     })
-    lang: ProductLangEnum;
+    lang: LangEnum;
 
     @Column({
         type: 'varchar'
