@@ -1,12 +1,12 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { LangEnum } from '../types/lang.enum';
-import { Product } from '../products/product.entity';
 import { Category } from './category.entity';
 
+@Unique(['category', 'lang'])
 @Entity({ name: 'categoryTranslations' })
 export class CategoryTranslation extends BaseEntity {
-    @PrimaryColumn({ type: 'int' })
-    categoryId: number;
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @ManyToOne(
         type => Category,
@@ -15,7 +15,7 @@ export class CategoryTranslation extends BaseEntity {
     )
     category: Category;
 
-    @PrimaryColumn({
+    @Column({
         type: 'enum',
         enum: LangEnum,
         default: LangEnum.UA

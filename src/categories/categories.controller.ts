@@ -27,6 +27,7 @@ export class CategoriesController {
     }
 
     @Patch('/:id')
+    @UsePipes(ValidationPipe)
     updateCategory(
         @Param('id', ParseIntPipe) id: number,
         @Body() data: UpdateCategoryDto

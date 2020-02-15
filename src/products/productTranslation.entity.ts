@@ -2,10 +2,11 @@ import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedC
 import { LangEnum } from '../types/lang.enum';
 import { Product } from './product.entity';
 
+@Unique(['product', 'lang'])
 @Entity({ name: 'productTranslations' })
 export class ProductTranslation extends BaseEntity {
-    @PrimaryColumn({ type: 'int' })
-    productId: number;
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @ManyToOne(
         type => Product,
@@ -14,7 +15,7 @@ export class ProductTranslation extends BaseEntity {
     )
     product: Product;
 
-    @PrimaryColumn({
+    @Column({
         type: 'enum',
         enum: LangEnum,
         default: LangEnum.UA

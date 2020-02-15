@@ -1,12 +1,13 @@
-import { IsInt, IsOptional, ValidateNested } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 import { CreateCategoryTranslationDto } from './create-category-translation.dto';
+import { CreateCategoryParentDto } from './create-category-parent.dto';
 
 export class CreateCategoryDto {
     @IsOptional()
-    @IsInt()
-    @Transform(Number)
-    parentId?: number;
+    @ValidateNested()
+    @Type(() => CreateCategoryParentDto)
+    parent?: CreateCategoryParentDto;
 
     @ValidateNested({
         each: true

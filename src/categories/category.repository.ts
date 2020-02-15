@@ -2,7 +2,6 @@ import { Brackets, EntityRepository, Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { FindCategoriesDto } from './dto/find-categories.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { CategoryTranslation } from './categoryTranslation.entity';
 import { NotFoundException } from '@nestjs/common';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
@@ -68,20 +67,6 @@ export class CategoryRepository extends Repository<Category> {
     async createCategory(data: CreateCategoryDto): Promise<Category> {
         const category = new Category();
         Category.merge(category, data);
-        if (data.parentId) {
-            const parent = await this.findOne(data.parentId);
-            if (parent) {
-                category.parent = parent;
-            } else {
-                throw new NotFoundException(`Parent category with id ${data.parentId} not found`);
-            }
-        }
-        category.translations = [];
-        data.translations.forEach(translation => {
-            const categoryTranslation = new CategoryTranslation();
-            CategoryTranslation.merge(categoryTranslation, translation);
-            category.translations.push(categoryTranslation);
-        });
         return category.save();
     }
 
@@ -89,20 +74,6 @@ export class CategoryRepository extends Repository<Category> {
         const category = await this.findOne(id);
         if (!category) {
             throw new NotFoundException();
-        }
-        if (data.parentId && data.parentId !== category.parentId) {
-            const parent = await this.findOne(data.parentId);
-            if (parent) {
-                category.parent = parent;
-            } else {
-                throw new NotFoundException(`Parent category with id ${data.parentId} not found`);
-            }
-        }
-        if (data.translations) {
-            await Promise.all(data.translations.map(async translation => {
-                return CategoryTranslation.update({ categoryId: id, lang: translation.lang }, translation);
-            }));
-            delete data.translations;
         }
         Category.merge(category, data);
         await category.save();

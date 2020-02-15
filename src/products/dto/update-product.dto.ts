@@ -2,6 +2,7 @@ import { CreateProductTranslationDto } from './create-product-translation.dto';
 import { IsInt, IsOptional, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { UpdateProductTranslationDto } from './update-product-translation.dto';
+import { CreateProductCategoryDto } from './create-product-category.dto';
 
 export class UpdateProductDto {
     @IsOptional()
@@ -13,8 +14,9 @@ export class UpdateProductDto {
     oldPrice?: number;
 
     @IsOptional()
-    @IsInt()
-    categoryId?: number;
+    @ValidateNested()
+    @Type(() => CreateProductCategoryDto)
+    category?: CreateProductCategoryDto;
 
     @IsOptional()
     @ValidateNested({

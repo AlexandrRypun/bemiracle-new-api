@@ -11,24 +11,12 @@ export class ProductRepository extends Repository<Product> {
     async createProduct(data: CreateProductDto): Promise<Product> {
         const product = new Product();
         Product.merge(product, data);
-        product.translations = [];
-        data.translations.forEach(translation => {
-            const productTranslation = new ProductTranslation();
-            ProductTranslation.merge(productTranslation, translation);
-            product.translations.push(productTranslation);
-        });
         return product.save();
     }
     async updateProduct(id: number, data: UpdateProductDto): Promise<Product> {
         const product = await this.findOne(id);
         if (!product) {
             throw new NotFoundException();
-        }
-        if (data.translations) {
-            await Promise.all(data.translations.map(async translation => {
-                return ProductTranslation.update({ productId: id, lang: translation.lang }, translation);
-            }));
-            delete data.translations;
         }
         Product.merge(product, data);
         await product.save();
