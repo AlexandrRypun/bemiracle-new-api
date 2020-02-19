@@ -1,7 +1,11 @@
 export default () => ({
     app: {
         port: process.env.PORT || 3000,
-        jwtSecret: process.env.JWT_SECRET
+        jwtSecret: process.env.JWT_SECRET,
+        userRole: {
+            user: 1,
+            admin: 2
+        }
     },
     database: {
         type: 'postgres',
@@ -11,6 +15,6 @@ export default () => ({
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
         entities: [`${__dirname}/../**/*.entity.{ts,js}`],
-        synchronize: true
+        synchronize: process.env.DATABASE_SYNC
     }
 });

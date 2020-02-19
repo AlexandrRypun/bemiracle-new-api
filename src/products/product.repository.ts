@@ -19,8 +19,8 @@ export class ProductRepository extends Repository<Product> {
             throw new NotFoundException();
         }
         Product.merge(product, data);
-        await product.save();
-        return this.findOne(id, { relations: ['translations'] });
+        await this.save(product, { reload: true });
+        return product;
     }
 
     async findProducts(filters: FindProductsDto): Promise<Product[]> {

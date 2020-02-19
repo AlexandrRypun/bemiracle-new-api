@@ -1,5 +1,5 @@
 import { CreateProductTranslationDto } from './create-product-translation.dto';
-import { IsInstance, IsInt, IsOptional, ValidateNested } from 'class-validator';
+import { IsInt, IsOptional, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateProductCategoryDto } from './create-product-category.dto';
 

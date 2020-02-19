@@ -1,9 +1,7 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/user.entity';
 import { JwtService } from '@nestjs/jwt';
-import { hash } from 'bcrypt';
-import { ConfigService } from '@nestjs/config';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,10 +18,7 @@ export class AuthService {
         return { accessToken };
     }
 
-    async signUpUser(email: string, password: string): Promise<void> {
-        const user = new User();
-        user.email = email;
-        user.password = await hash(password, 10);
-        await user.save();
+    signUpUser(params: CreateUserDto): Promise<void> {
+        return this.userService.signUp(params);
     }
 }
