@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserGroup } from './userGroup.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,7 +26,10 @@ export class UsersService {
         await user.save();
     }
     async signIn(email: string, password: string): Promise<User> {
-        const user = await this.userRepository.findOne({ email });
+        const query = this.userRepository.createQueryBuilder('user').innerJoinAndSelect('user.groups', 'groups');
+        query.addSelect('password', 'user_password');
+        query.where({ email });
+        const user = await query.getOne();
         if (user && await compare(password, user.password)) {
             return user;
         }
@@ -39,5 +43,15 @@ export class UsersService {
         }
 
         throw new NotFoundException();
+    }
+
+    async updateUser(id: number, params: UpdateUserDto): Promise<User> {
+        const user = await this.userRepository.findOne(id);
+        if (!user) {
+            throw new NotFoundException();
+        }
+        User.merge(user, params);
+        await this.userRepository.save(user, { reload: true });
+        return user;
     }
 }
