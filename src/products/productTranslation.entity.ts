@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { LangEnum } from '../types/lang.enum';
 import { Product } from './product.entity';
 

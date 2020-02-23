@@ -2,6 +2,7 @@ export default () => ({
     app: {
         port: process.env.PORT || 3000,
         jwtSecret: process.env.JWT_SECRET,
+        jwtExpiresIn: process.env.JWT_EXPIRES_IN,
         userRole: {
             user: 1,
             admin: 2

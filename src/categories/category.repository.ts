@@ -58,7 +58,7 @@ export class CategoryRepository extends Repository<Category> {
                 query2.select(select.split(','));
             }
 
-            const [categories, count] = await query2.getManyAndCount();
+            const [categories] = await query2.getManyAndCount();
             return categories;
         }
         return [];

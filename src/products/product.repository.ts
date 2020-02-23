@@ -1,6 +1,5 @@
 import { Brackets, EntityRepository, Repository } from 'typeorm';
 import { Product } from './product.entity';
-import { ProductTranslation } from './productTranslation.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FindProductsDto } from './dto/find-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -78,7 +77,7 @@ export class ProductRepository extends Repository<Product> {
                 query2.select(select.split(','));
             }
 
-            const [products, count] = await query2.getManyAndCount();
+            const [products] = await query2.getManyAndCount();
             return products;
         }
         return [];
