@@ -1,6 +1,5 @@
 import { IsEmail, IsInt, IsOptional, Length, Matches } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { Unique } from 'typeorm';
 
 export class CreateUserDto {
     @IsEmail()

@@ -2,15 +2,21 @@ import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
-import { GetUser } from '../auth/get-user.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { AllowedRoles } from '../common/decorators/allowed-roles.decorator';
+import { SelfActionGuard } from './guards/self-action.guard';
+import { OrGuards } from '../common/decorators/or-guards.decorator';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {
     }
-    @UseGuards(AuthGuard('jwt'))
+
+    @OrGuards(RolesGuard, SelfActionGuard)
+    @AllowedRoles('admin')
+    @UseGuards(AuthGuard('jwt'), SelfActionGuard, RolesGuard)
     @Get('/:id')
-    getUser(@Param('id', ParseIntPipe) id: number, @GetUser() currentUser: User): Promise<User> {
+    getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
         return this.usersService.getUserById(id);
     }
 }
