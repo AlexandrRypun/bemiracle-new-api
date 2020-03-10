@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
@@ -7,6 +7,8 @@ import { AllowedRoles } from '../common/decorators/allowed-roles.decorator';
 import { SelfActionGuard } from './guards/self-action.guard';
 import { OrGuards } from '../common/decorators/or-guards.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUser } from '../auth/get-user.decorator';
+import { UpdateUserInterceptor } from './interceptors/update-user.interceptor';
 
 @Controller('users')
 export class UsersController {
@@ -21,14 +23,15 @@ export class UsersController {
         return this.usersService.getUserById(id);
     }
 
-    @UsePipes(ValidationPipe)
     @OrGuards(SelfActionGuard, RolesGuard)
     @AllowedRoles('admin')
     @UseGuards(AuthGuard('jwt'), SelfActionGuard, RolesGuard)
+    @UseInterceptors(UpdateUserInterceptor)
     @Patch('/:id')
     updateUser(
         @Param('id', ParseIntPipe) id: number,
-        @Body() params: UpdateUserDto
+        @Body(ValidationPipe) params: UpdateUserDto,
+        @GetUser() user: User
     ): Promise<User> {
         return this.usersService.updateUser(id, params);
     }

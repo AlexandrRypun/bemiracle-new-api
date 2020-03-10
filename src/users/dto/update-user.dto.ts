@@ -1,9 +1,13 @@
 import { IsEmail, IsInt, IsOptional, Length, Matches } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { IsEmailUsed } from '../decorators/is-email-used.decorator';
 
 export class UpdateUserDto {
+    id: number;
+
     @IsOptional()
     @IsEmail()
+    @IsEmailUsed()
     email?: string;
 
     @IsOptional()
