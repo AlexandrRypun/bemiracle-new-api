@@ -72,6 +72,7 @@ export class ProductRepository extends Repository<Product> {
             const query2 = await this.createQueryBuilder('product');
             query2
                 .innerJoinAndSelect('product.translations', 'translation')
+                .leftJoinAndSelect('product.images', 'image')
                 .where('product.id IN (:...prodIds)', { prodIds: prodIds.map(({ id }) => id) });
             if (select) {
                 query2.select(select.split(','));

@@ -35,3 +35,9 @@ lerna-debug.log*
 
 # configs
 src/configuration/*.env
+
+!/files/
+/files/*
+!/files/products/
+/files/products/*
+!/files/products/default/

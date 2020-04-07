@@ -8,8 +8,10 @@ import {
     ParseIntPipe,
     Patch,
     Post,
-    Query,
+    Query, Res,
+    UploadedFile,
     UseGuards,
+    UseInterceptors,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
@@ -21,6 +23,9 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { AllowedRoles } from '../common/decorators/allowed-roles.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
+import { ImageSizeEnum } from './image-size.enum';
 
 @Controller('products')
 export class ProductsController {
@@ -59,5 +64,29 @@ export class ProductsController {
     @HttpCode(204)
     deleteProduct(@Param('id', ParseIntPipe) id: number) {
         return this.productsService.deleteProduct(id);
+    }
+
+    @Post('/:id/upload')
+    @AllowedRoles('admin')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @UseInterceptors(FileInterceptor('file'))
+    uploadImage(
+        @Param('id', ParseIntPipe) id: number,
+        @UploadedFile() file: ParameterDecorator
+    ): Promise<void>  {
+        return this.productsService.uploadImage(id, file);
+    }
+
+    @Get('/image/:id')
+    async getImageContent(
+        @Param('id', ParseIntPipe) id: number,
+        @Res() res: Response,
+        @Query('size') size?: ImageSizeEnum
+    ) {
+        const stream = await this.productsService.getImageContent(id, size);
+        res.set({
+            'Content-Type': 'image/*'
+        });
+        stream.pipe(res);
     }
 }

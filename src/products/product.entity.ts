@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ProductTranslation } from './productTranslation.entity';
 import { Category } from '../categories/category.entity';
+import { ProductImage } from './productImage.entity';
 
 @Entity({ name: 'products' })
 export class Product extends BaseEntity {
@@ -39,4 +40,13 @@ export class Product extends BaseEntity {
         }
     )
     translations: ProductTranslation[];
+
+    @OneToMany(
+        type => ProductImage,
+        productImage => productImage.product,
+        {
+            cascade: true
+        }
+    )
+    images: ProductImage[];
 }
