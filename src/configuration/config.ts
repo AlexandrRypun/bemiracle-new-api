@@ -5,7 +5,8 @@ export default () => ({
         domain: process.env.DOMAIN,
         port: process.env.PORT || 3000,
         jwtSecret: process.env.JWT_SECRET,
-        jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+        jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '30m',
+        jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '1d',
         userRole: {
             user: 1,
             admin: 2

@@ -1,6 +1,7 @@
-import { Controller, Post, Body, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, UsePipes, ValidationPipe, Headers, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { IJwtTokens } from './jwt-tokens.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -10,7 +11,7 @@ export class AuthController {
     }
 
     @Post('/signin')
-    signIn(@Body() params): Promise<{ accessToken: string }> {
+    signIn(@Body() params): Promise<IJwtTokens> {
         return this.authService.signInUser(params.email, params.password);
     }
 
@@ -18,5 +19,10 @@ export class AuthController {
     @UsePipes(ValidationPipe)
     signUp(@Body() params: CreateUserDto): Promise<void> {
         return this.authService.signUpUser(params);
+    }
+
+    @Put('/refreshtokens')
+    refreshTokens(@Headers('refreshtoken') refreshToken: string): Promise<IJwtTokens> {
+        return this.authService.refreshTokens(refreshToken);
     }
 }

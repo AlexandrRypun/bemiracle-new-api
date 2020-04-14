@@ -7,6 +7,8 @@ import { ConfigService } from '@nestjs/config';
 import { MyConfigModule } from '../config/config.module';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './jwt.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RefreshToken } from './refreshToken.entity';
 
 @Module({
     imports: [
@@ -18,10 +20,11 @@ import { JwtStrategy } from './jwt.strategy';
             useFactory: (configService: ConfigService) => {
                 return {
                     secret: configService.get('app.jwtSecret'),
-                    signOptions: { expiresIn: configService.get('app.jwtExpiresIn') }
+                    signOptions: { expiresIn: configService.get('app.jwtAccessExpiresIn') }
                 };
             }
-        })
+        }),
+        TypeOrmModule.forFeature([RefreshToken])
     ],
     providers: [AuthService, JwtStrategy, ConfigService],
     controllers: [AuthController],

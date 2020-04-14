@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/users.service';
 
@@ -17,7 +17,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: { id: number }): Promise<User> {
+    async validate(payload: { id: number, refreshToken?: boolean }): Promise<User> {
+        if (payload.refreshToken) {
+            throw new UnauthorizedException('refreshToken can\'t be used as accessToken');
+        }
         const user = await this.userService.getUserById(payload.id);
         if (user) {
             delete user.password;
