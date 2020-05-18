@@ -12,6 +12,7 @@ import { extname, resolve, basename, dirname, join } from 'path';
 import { ProductImageRepository } from './productImage.repository';
 import { createReadStream, ReadStream } from 'fs';
 import { ImageSizeEnum } from './image-size.enum';
+import { GetManyResponse } from '../common/interfaces';
 
 @Injectable()
 export class ProductsService {
@@ -24,7 +25,7 @@ export class ProductsService {
         private readonly configService: ConfigService
     ) {
     }
-    async getAllProducts(filters: FindProductsDto): Promise<Product[]> {
+    async getAllProducts(filters: FindProductsDto): Promise<GetManyResponse<Product>> {
         return this.productRepository.findProducts(filters);
     }
     async getProductById(id: number): Promise<Product> {

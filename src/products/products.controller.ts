@@ -26,6 +26,7 @@ import { AllowedRoles } from '../common/decorators/allowed-roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { ImageSizeEnum } from './image-size.enum';
+import { GetManyResponse } from '../common/interfaces';
 
 @Controller('products')
 export class ProductsController {
@@ -34,7 +35,7 @@ export class ProductsController {
 
     @Get()
     @UsePipes(ValidationPipe)
-    getAllProducts(@Query() filters: FindProductsDto): Promise<Product[]> {
+    getAllProducts(@Query() filters: FindProductsDto): Promise<GetManyResponse<Product>> {
         return this.productsService.getAllProducts(filters);
     }
 

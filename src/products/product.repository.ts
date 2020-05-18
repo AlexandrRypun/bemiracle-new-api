@@ -4,6 +4,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { FindProductsDto } from './dto/find-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { NotFoundException } from '@nestjs/common';
+import { GetManyResponse } from '../common/interfaces';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -22,7 +23,7 @@ export class ProductRepository extends Repository<Product> {
         return product;
     }
 
-    async findProducts(filters: FindProductsDto): Promise<Product[]> {
+    async findProducts(filters: FindProductsDto): Promise<GetManyResponse<Product>> {
         const { select } = filters;
         delete filters.select;
         const query = this.createQueryBuilder('product').innerJoinAndSelect('product.translations', 'translation');
@@ -66,7 +67,8 @@ export class ProductRepository extends Repository<Product> {
         query.select([
             'product.id'
         ]);
-        const prodIds = await query.getMany();
+        query.orderBy('product.id');
+        const [prodIds, total] = await query.getManyAndCount();
 
         if (prodIds.length > 0) {
             const query2 = await this.createQueryBuilder('product');
@@ -78,9 +80,9 @@ export class ProductRepository extends Repository<Product> {
                 query2.select(select.split(','));
             }
 
-            const [products] = await query2.getManyAndCount();
-            return products;
+            const data = await query2.getMany();
+            return { data, total };
         }
-        return [];
+        return { data: [], total };
     }
 }
