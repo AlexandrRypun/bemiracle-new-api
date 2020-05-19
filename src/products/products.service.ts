@@ -72,25 +72,34 @@ export class ProductsService {
 
     async getImageContent(id: number, size: ImageSizeEnum = ImageSizeEnum.ORIGIN): Promise<ReadStream> {
         const imgDir = this.configService.get<string>('app.files.path.productImages');
+        const defaultImage = this.configService.get<string>('app.files.path.defaultProductImage');
         let localPath;
         let realSize = size;
         if (Object.values(ImageSizeEnum).includes(size)) {
             const image = await this.productImageRepository.findOne({ id });
             if (image) {
-                localPath = join(String(image.productId), image.title);
+                localPath = join(String(image.productId), image.name);
             }
         } else {
             realSize = ImageSizeEnum.ORIGIN;
         }
         if (!localPath) {
-            localPath = this.configService.get<string>('app.files.path.defaultProductImage');
+            localPath = defaultImage;
         }
         const fullPath = join(imgDir, localPath);
-        const dir = dirname(fullPath);
-        const ext = extname(fullPath);
-        const title = basename(fullPath, ext);
-        const path = join(dir, `${title}_${realSize}${ext}`);
-
+        let path = this.getSizedImgPath(fullPath, realSize);
+        try  {
+            await fsPromises.access(path);
+        } catch (e) {
+            path = this.getSizedImgPath(join(imgDir, defaultImage), realSize);
+        }
         return createReadStream(path);
+    }
+
+    private getSizedImgPath(path, size: ImageSizeEnum = ImageSizeEnum.ORIGIN) {
+        const dir = dirname(path);
+        const ext = extname(path);
+        const name = basename(path, ext);
+        return join(dir, `${name}_${size}${ext}`);
     }
 }

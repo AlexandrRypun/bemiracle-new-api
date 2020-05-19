@@ -24,6 +24,10 @@ export class FindProductsDto {
     skip?: number;
 
     @IsOptional()
+    @IsString()
+    orderBy?: string;
+
+    @IsOptional()
     @Length(1, 20)
     search?: string;
 

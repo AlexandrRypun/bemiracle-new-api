@@ -1,9 +1,10 @@
-import { Brackets, EntityRepository, Repository } from 'typeorm';
+import { Brackets, EntityRepository, OrderByCondition, Repository } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
+
 import { Product } from './product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FindProductsDto } from './dto/find-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { NotFoundException } from '@nestjs/common';
 import { GetManyResponse } from '../common/interfaces';
 
 @EntityRepository(Product)
@@ -43,6 +44,19 @@ export class ProductRepository extends Repository<Product> {
             query.skip(filters.skip);
             delete filters.skip;
         }
+        let orderBy: OrderByCondition = { id: 'ASC' };
+        if (filters.orderBy) {
+            let field = filters.orderBy;
+            let direction: ('ASC' | 'DESC') = 'ASC';
+            if (filters.orderBy.startsWith('-')) {
+                field = field.slice(1);
+                direction = 'DESC';
+            }
+            orderBy = {
+                [field.indexOf('.') === -1 ? `product.${field}` : field]: direction
+            };
+            delete filters.orderBy;
+        }
         if (filters.translation) {
             Object.entries(filters.translation).forEach(([key, value], i) => {
                 const val = `translation_value_${i}`;
@@ -67,7 +81,6 @@ export class ProductRepository extends Repository<Product> {
         query.select([
             'product.id'
         ]);
-        query.orderBy('product.id');
         const [prodIds, total] = await query.getManyAndCount();
 
         if (prodIds.length > 0) {
@@ -78,6 +91,10 @@ export class ProductRepository extends Repository<Product> {
                 .where('product.id IN (:...prodIds)', { prodIds: prodIds.map(({ id }) => id) });
             if (select) {
                 query2.select(select.split(','));
+            }
+            query2.orderBy(orderBy);
+            if (orderBy['product.id'] === undefined) {
+                query2.addOrderBy('product.id');
             }
 
             const data = await query2.getMany();

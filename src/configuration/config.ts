@@ -26,8 +26,8 @@ export default () => ({
                         width: 900
                     },
                     teaser: {
-                        height: 300,
-                        width: 300
+                        height: 766,
+                        width: 600
                     },
                     thumbnail: {
                         height: 100,
