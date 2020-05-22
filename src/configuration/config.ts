@@ -14,7 +14,7 @@ export default () => ({
         files: {
             path: {
                 productImages: resolve('files', 'products'),
-                defaultProductImage: join('default', 'default.png')
+                defaultProductImage: join('default', 'default.jpg')
             },
             allowedExtensions: {
                 image: ['jpg', 'jpeg', 'png']
@@ -22,15 +22,15 @@ export default () => ({
             imageSize: {
                 product: {
                     origin: {
-                        height: 900,
-                        width: 900
+                        height: 1110,
+                        width: 870
                     },
                     teaser: {
                         height: 766,
                         width: 600
                     },
                     thumbnail: {
-                        height: 100,
+                        height: 128,
                         width: 100
                     }
                 }

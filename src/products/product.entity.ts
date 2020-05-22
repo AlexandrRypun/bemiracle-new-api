@@ -21,6 +21,12 @@ export class Product extends BaseEntity {
 
     @Column({
         type: 'int',
+        default: 0
+    })
+    inStock: number;
+
+    @Column({
+        type: 'int',
         nullable: true
     })
     categoryId?: number;

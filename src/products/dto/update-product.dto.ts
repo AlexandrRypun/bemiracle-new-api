@@ -13,6 +13,10 @@ export class UpdateProductDto {
     oldPrice?: number;
 
     @IsOptional()
+    @IsInt()
+    inStock: number;
+
+    @IsOptional()
     @ValidateNested()
     @Type(() => CreateProductCategoryDto)
     category?: CreateProductCategoryDto;

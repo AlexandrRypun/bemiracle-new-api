@@ -28,14 +28,20 @@ export class ProductTranslation extends BaseEntity {
     name: string;
 
     @Column({
-        type: 'varchar',
+        type: 'text',
         nullable: true
     })
-    description?: string;
+    description: string;
 
     @Column({
-        type: 'varchar',
+        type: 'text',
         nullable: true
     })
-    shortDescription?: string;
+    shortDescription: string;
+
+    @Column({
+        type: 'text',
+        nullable: true
+    })
+    ingredients: string;
 }

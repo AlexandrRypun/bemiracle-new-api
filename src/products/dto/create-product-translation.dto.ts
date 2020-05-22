@@ -15,4 +15,8 @@ export class CreateProductTranslationDto {
     @IsString()
     @IsOptional()
     shortDescription?: string;
+
+    @IsString()
+    @IsOptional()
+    ingredients?: string;
 }

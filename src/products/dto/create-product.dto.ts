@@ -11,6 +11,9 @@ export class CreateProductDto {
     @IsInt()
     oldPrice?: number;
 
+    @IsInt()
+    inStock: number;
+
     @ValidateNested()
     @Type(() => CreateProductCategoryDto)
     category: CreateProductCategoryDto;

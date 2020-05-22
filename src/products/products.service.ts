@@ -29,7 +29,7 @@ export class ProductsService {
         return this.productRepository.findProducts(filters);
     }
     async getProductById(id: number): Promise<Product> {
-        const product = await this.productRepository.findOne(id, { relations: ['translations', 'images'] });
+        const product = await this.productRepository.findOne(id, { relations: ['translations', 'images', 'category', 'category.translations'] });
         if (product) {
             return product;
         }

@@ -23,4 +23,8 @@ export class UpdateProductTranslationDto {
     @IsOptional()
     @IsString()
     shortDescription?: string;
+
+    @IsOptional()
+    @IsString()
+    ingredients?: string;
 }
