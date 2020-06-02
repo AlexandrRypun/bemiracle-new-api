@@ -1,16 +1,17 @@
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindManyOptions } from 'typeorm/find-options/FindManyOptions';
+import { ConfigService } from '@nestjs/config';
+import { createReadStream, ReadStream, promises as fsPromises } from 'fs';
+import { extname, resolve, basename, dirname, join } from 'path';
+
 import { Product } from './product.entity';
 import { ProductRepository } from './product.repository';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FindProductsDto } from './dto/find-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FilesService } from '../files/files.service';
-import { promises as fsPromises } from 'fs';
-import { ConfigService } from '@nestjs/config';
-import { extname, resolve, basename, dirname, join } from 'path';
 import { ProductImageRepository } from './productImage.repository';
-import { createReadStream, ReadStream } from 'fs';
 import { ImageSizeEnum } from './image-size.enum';
 import { GetManyResponse } from '../common/interfaces';
 
@@ -25,8 +26,11 @@ export class ProductsService {
         private readonly configService: ConfigService
     ) {
     }
-    async getAllProducts(filters: FindProductsDto): Promise<GetManyResponse<Product>> {
+    getAllProducts(filters: FindProductsDto): Promise<GetManyResponse<Product>> {
         return this.productRepository.findProducts(filters);
+    }
+    find(conditions: FindManyOptions<Product>): Promise<Product[]> {
+        return this.productRepository.find(conditions);
     }
     async getProductById(id: number): Promise<Product> {
         const product = await this.productRepository.findOne(id, { relations: ['translations', 'images', 'category', 'category.translations'] });

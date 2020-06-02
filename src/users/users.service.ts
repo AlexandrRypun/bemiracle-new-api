@@ -54,4 +54,9 @@ export class UsersService {
         await this.userRepository.save(user, { reload: true });
         return user;
     }
+
+    isAdmin(user: User): boolean {
+        const adminRoleId = this.configService.get<number>('app.userRole.admin');
+        return Array.isArray(user.groups) && user.groups.some(group => group.id === adminRoleId);
+    }
 }

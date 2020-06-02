@@ -11,6 +11,7 @@ import { ProductImageRepository } from './productImage.repository';
       TypeOrmModule.forFeature([ProductRepository, ProductImageRepository]),
       FilesModule
   ],
+  exports: [ProductsService],
   controllers: [ProductsController],
   providers: [ProductsService]
 })

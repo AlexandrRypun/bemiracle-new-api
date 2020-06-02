@@ -1,9 +1,10 @@
-import { IsEmail, IsInt, IsOptional, Length, Matches } from 'class-validator';
+import { IsEmail, IsInt, IsOptional, Length, Matches, MaxLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { IsEmailUsed } from '../decorators/is-email-used.decorator';
 
 export class CreateUserDto {
     @IsEmail()
+    @MaxLength(320)
     @IsEmailUsed()
     email: string;
 

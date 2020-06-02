@@ -44,7 +44,7 @@ export class ProductRepository extends Repository<Product> {
             query.skip(filters.skip);
             delete filters.skip;
         }
-        let orderBy: OrderByCondition = { id: 'ASC' };
+        let orderBy: OrderByCondition = { 'product.id': 'ASC' };
         if (filters.orderBy) {
             let field = filters.orderBy;
             let direction: ('ASC' | 'DESC') = 'ASC';

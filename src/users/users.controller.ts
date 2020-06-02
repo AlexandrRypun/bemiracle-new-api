@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Patch, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -7,7 +8,7 @@ import { AllowedRoles } from '../common/decorators/allowed-roles.decorator';
 import { SelfActionGuard } from './guards/self-action.guard';
 import { OrGuards } from '../common/decorators/or-guards.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { GetUser } from '../auth/get-user.decorator';
+import { GetUser } from '../common/decorators/get-user.decorator';
 import { UpdateUserInterceptor } from './interceptors/update-user.interceptor';
 
 @Controller('users')

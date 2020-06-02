@@ -6,7 +6,8 @@ export abstract class AOrGuardGuard {
 
     canSkip(context): boolean {
         const req = context.switchToHttp().getRequest();
-        return req.skipOrGuards === true;
+        const isOrGuard = this.isOrGuard(context);
+        return isOrGuard && req.skipOrGuards === true;
     }
 
     skipNextOrGuards(context): void {
@@ -40,5 +41,17 @@ export abstract class AOrGuardGuard {
             return orGuards.some(guard => this instanceof guard);
         }
         return false;
+    }
+
+    nextStep(canActivate: boolean, context: ExecutionContext): boolean {
+        if (this.isOrGuard(context)) {
+            if (canActivate) {
+                this.skipNextOrGuards(context);
+            } else {
+                return this.orGuardsExist(context);
+            }
+        }
+
+        return canActivate;
     }
 }

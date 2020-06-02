@@ -12,9 +12,7 @@ export class RolesGuard extends AOrGuardGuard implements CanActivate {
         super(reflector);
     }
     canActivate(context: ExecutionContext): boolean | Promise<boolean> {
-        const canSkip = this.canSkip(context);
-        const isOrGuard = this.isOrGuard(context);
-        if (isOrGuard && canSkip) {
+        if (this.canSkip(context)) {
             return true;
         }
         const roles = this.reflector.get<string[]>('allowedRoles', context.getHandler());
@@ -26,14 +24,6 @@ export class RolesGuard extends AOrGuardGuard implements CanActivate {
             canActivate = user && user.groups && user.groups.some(group => roleIds.includes(group.id));
         }
 
-        if (isOrGuard) {
-            if (canActivate) {
-                this.skipNextOrGuards(context);
-            } else {
-                return this.orGuardsExist(context);
-            }
-        }
-
-        return canActivate;
+        return this.nextStep(canActivate, context);
     }
 }
