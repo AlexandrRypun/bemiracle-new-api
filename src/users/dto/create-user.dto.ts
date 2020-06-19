@@ -22,7 +22,7 @@ export class CreateUserDto {
     phone?: string;
 
     @IsOptional()
-    @Length(1, 50)
+    @MaxLength(50)
     city?: string;
 
     @IsOptional()

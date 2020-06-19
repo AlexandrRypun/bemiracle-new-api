@@ -2,6 +2,7 @@ import { Controller, Post, Body, UsePipes, ValidationPipe, Headers, Put } from '
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { IJwtTokens } from './jwt-tokens.interface';
+import { TransformPipe } from '../users/pipes/transform.pipe';
 
 @Controller('auth')
 export class AuthController {
@@ -16,7 +17,7 @@ export class AuthController {
     }
 
     @Post('/signup')
-    @UsePipes(ValidationPipe)
+    @UsePipes(TransformPipe, ValidationPipe)
     signUp(@Body() params: CreateUserDto): Promise<void> {
         return this.authService.signUpUser(params);
     }
